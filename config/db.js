@@ -1,15 +1,12 @@
-// Import MySQL2
 const mysql = require('mysql2');
 
-// Create and configure the database connection pool
 const db = mysql
   .createPool({
-    host: 'localhost', // Database host
-    user: 'root', // Replace with your actual root username
-    password: 'root@123', // Replace with your actual root password
-    database: 'coreapp', // Database name
+    host: 'localhost', 
+    user: 'root', 
+    password: 'root',
+    database: 'jobscope', 
   })
-  .promise(); // Enable async/await
+  .promise(); 
 
-// Export the connection
 module.exports = db;

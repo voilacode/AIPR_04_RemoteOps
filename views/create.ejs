@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Task</title>
+    <meta name="csrf-token" content="<%= csrfToken %>">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-pink-50">
+    <nav class="bg-pink-900 p-4 shadow-md">
+        <div class="px-10 mx-auto flex justify-between items-center">
+          <h1 class="text-white text-2xl font-semibold"><a href="/" class="text-white">RemoteOps</a></h1>
+          <div class="flex space-x-4">  
+            <a href="/" class="text-white text-sm  bg-pink-600 duration-300 ease-in-out hover:bg-pink-500 px-4 py-2 rounded">Home</a>
+            <a href="/aiapp" class="text-white text-sm  bg-pink-600 duration-300 ease-in-out hover:bg-pink-500 px-4 py-2 rounded">AI App</a>
+            <a href="/profile" class="text-white text-sm  bg-pink-600 duration-300 ease-in-out hover:bg-pink-500 px-4 py-2 rounded">Profile</a>
+            <% if (user && user.role !== 'user') { %>  
+              <a href="/admin" class="text-white text-sm  bg-pink-600 duration-300 ease-in-out hover:bg-pink-500 px-4 py-2 rounded">Admin</a>
+            <% } %>
+            <a href="/logout" class="text-white text-sm  bg-pink-600 duration-300 ease-in-out hover:bg-pink-500 px-4 py-2 rounded">Logout</a>
+          </div>
+        </div>
+      </nav>
+
+      <main class="p-6 px-10">
+            <h1 class="text-3xl font-semibold text-center text-gray-700 mb-8">Create Task</h1>
+
+            <form action="/create" method="POST" class="bg-white p-6 rounded-lg shadow-lg max-w-lg mx-auto">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+                <div class="mb-4">
+                    <label for="title" class="block text-lg font-medium text-pink-800">Task Title</label>
+                    <input type="text" id="title" name="title" placeholder="Enter task title" required class="mt-2 border-2 border-gray-300 p-3 w-full rounded-lg focus:ring-2 focus:ring-pink-500">
+                </div>
+
+                <div class="mb-6">
+                    <label for="description" class="block text-lg font-medium text-pink-800">Task Description</label>
+                    <textarea id="description" name="description" placeholder="Enter task description" required class="mt-2 border-2 border-gray-300 p-3 w-full rounded-lg focus:ring-2 focus:ring-pink-500"></textarea>
+                </div>
+
+                <button type="submit" class="w-full py-3 bg-pink-600 text-white font-semibold rounded-lg hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-colors">Create Task</button>
+            </form>
+        </main>
+
+        <footer class="bg-pink-900 p-4 shadow-md text-center text-white fixed bottom-0 w-full mt-28 border-t border-pink-400 mt-20">
+            &#169; RemoteOps
+        </footer>
+</body>
+</html>

@@ -4,6 +4,6 @@ const coreController = require('../controllers/coreController');
 const { ensureAuthenticated } = require('../middlewares/authMiddleware');
 
 // Route to render the homepage for authenticated users
-router.get('/', ensureAuthenticated, coreController.getIndex);
+// router.get('/', ensureAuthenticated, coreController.getIndex);
 
 module.exports = router;

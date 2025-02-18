@@ -1,32 +1,54 @@
- <!-- Loading Header modules from snippets -->
- <%- include('snippets/header') %>
-
-<main class="max-w-screen-xl px-16 mx-auto">
-      <!-- Admin Section: User List -->
-  <section class="bg-white p-5">
-    <h1 class="text-3xl font-semibold mb-8 ">Admin - User List</h1>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <% users.forEach(user => { %>
-        <div class="bg-gray-200 rounded-lg shadow-md p-6 flex justify-between items-center">
-          <div>
-            <h2 class="text-2xl font-semibold  mb-4"><%= user.name %></h2>
-            <ul class="">
-              <li><span class="text-gray-800 font-semibold">Email:</span> <%= user.email %></li>
-              <li><span class="text-gray-800 font-semibold">Phone:</span> <%= user.phone %></li>
-              <li><span class="text-gray-800 font-semibold">Role:</span> <%= user.role %></li>
-              <li><span class="text-gray-800 font-semibold">Gender:</span> <%= user.gender %></li>
-              <li><span class="text-gray-800 font-semibold">Location:</span> <%= user.location %></li>
-            </ul>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <meta name="csrf-token" content="<%= csrfToken %>">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-pink-50">
+    <nav class="bg-pink-900 p-4 shadow-md">
+        <div class="px-10 mx-auto flex justify-between items-center">
+          <h1 class="text-white text-2xl font-semibold"><a href="/" class="text-white">RemoteOps</a></h1>
+          <div class="flex space-x-4">  
+            <a href="/" class="text-white text-sm  bg-pink-600 duration-300 ease-in-out hover:bg-pink-500 px-4 py-2 rounded">Home</a>
+            <a href="/aiapp" class="text-white text-sm  bg-pink-600 duration-300 ease-in-out hover:bg-pink-500 px-4 py-2 rounded">AI App</a>
+            <a href="/profile" class="text-white text-sm  bg-pink-600 duration-300 ease-in-out hover:bg-pink-500 px-4 py-2 rounded">Profile</a>
+            <% if (user && user.role !== 'user') { %>  
+              <a href="/admin" class="text-white text-sm  bg-pink-600 duration-300 ease-in-out hover:bg-pink-500 px-4 py-2 rounded">Admin</a>
+            <% } %>
+            <a href="/logout" class="text-white text-sm  bg-pink-600 duration-300 ease-in-out hover:bg-pink-500 px-4 py-2 rounded">Logout</a>
           </div>
         </div>
-      <% }) %>
-    </div>
-  </section>
-</main>
-      
- <!-- Loading Footer modules from snippets -->
- <%- include('snippets/footer') %>
-   
+      </nav>
 
+      <main class="p-6 px-16">
+      <!-- Admin Section: User List -->
+      <section class="bg-white p-5 mb-20">
+        <h1 class="text-3xl font-semibold mb-8 ">Admin - User List</h1>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <% users.forEach(user => { %>
+            <div class="bg-gray-200 rounded-lg shadow-md p-6 flex justify-between items-center">
+              <div>
+                <h2 class="text-2xl font-semibold  mb-4"><%= user.name %></h2>
+                <ul class="">
+                  <li><span class="text-gray-800 font-semibold">Email:</span> <%= user.email %></li>
+                  <li><span class="text-gray-800 font-semibold">Phone:</span> <%= user.phone %></li>
+                  <li><span class="text-gray-800 font-semibold">Role:</span> <%= user.role %></li>
+                  <li><span class="text-gray-800 font-semibold">Gender:</span> <%= user.gender %></li>
+                  <li><span class="text-gray-800 font-semibold">Location:</span> <%= user.location %></li>
+                </ul>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </section>
+    </main>
 
+    <footer class="bg-pink-900 p-4 shadow-md text-center text-white fixed bottom-0 w-full mt-28 border-t border-pink-400 mt-20">
+      &#169; RemoteOps
+  </footer>
 
+</body>
+</html>

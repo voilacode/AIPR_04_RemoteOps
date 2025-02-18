@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel</title>
+    <title>Edit Task</title>
     <meta name="csrf-token" content="<%= csrfToken %>">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
@@ -23,30 +23,28 @@
         </div>
       </nav>
 
-      <main class="p-6 px-16">
-        <div class="">
-          <h1 class="text-2xl font-semibold my-8">AI Content Generator</h1>
-          <form action="/aiapp" method="POST" class="p-8 bg-white shadow-md rounded">
-              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-              <textarea name="prompt" rows="4" class="resize-none p-2 mb-4 border rounded border border-gray-200 focus: border-gray-200  w-full" placeholder="Enter your prompt..."></textarea>
-              <button type="submit" class=" p-2 mt-2 bg-pink-600 px-4 text-white rounded">Generate Result</button>
-          </form>
-        </div>
-        <div>
-          <% if (content && content !== "") { %>
-            <div class="bg-white p-6 my-4 shadow-md rounded-md">
-              <h3 class="pb-3 font-semibold text-lg">Result</h3>
-              <div>
-                <%= content %>
-              </div>
+      <main class="p-6 px-10">
+        <h1 class="text-3xl font-semibold text-center text-gray-700 mb-8">Edit Task</h1>
+
+        <form action="/edit/<%= task.id %>" method="POST" class="bg-white p-6 rounded-lg shadow-lg max-w-lg mx-auto">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+            <div class="mb-4">
+                <label for="title" class="block text-lg font-medium text-pink-800">Task Title</label>
+                <input type="text" id="title" name="title" value="<%= task.title %>" required class="mt-2 border-2 border-gray-300 p-3 w-full rounded-lg focus:ring-2 focus:ring-pink-500">
             </div>
-            <div class="p-10"></div> 
-          <% } %>
-        </div>
-      </main>
-      
-      <footer class="bg-pink-900 p-4 shadow-md text-center text-white fixed bottom-0 w-full mt-28 border-t border-pink-400 mt-20">
+
+            <div class="mb-6">
+                <label for="description" class="block text-lg font-medium text-pink-800">Task Description</label>
+                <textarea id="description" name="description" required class="mt-2 border-2 border-gray-300 p-3 w-full rounded-lg focus:ring-2 focus:ring-pink-500"><%= task.description %></textarea>
+            </div>
+
+            <button type="submit" class="w-full py-3 bg-pink-600 text-white font-semibold rounded-lg hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-colors">Update Task</button>
+        </form>
+    </main>
+
+    <footer class="bg-pink-900 p-4 shadow-md text-center text-white fixed bottom-0 w-full mt-28 border-t border-pink-400 mt-20">
         &#169; RemoteOps
     </footer>
-    </body>
-   </html>
+</body>
+</html>

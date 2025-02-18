@@ -4,6 +4,8 @@ const aiModel = require('../models/aiModel');
 // Render AI app page with form to take prompt
 exports.getAIApp = (req, res) => {
   const user = req.session.user;
+  console.log(user);
+  
   res.render('aiapp', { user, content: '' });
 };
 
@@ -11,6 +13,7 @@ exports.getAIApp = (req, res) => {
 exports.generateAIContent = async (req, res) => {
   let { prompt } = req.body;
   const user = req.session.user;
+  console.log(user);
 
   // Generate content using AI model
   const generatedContent = await aiModel.generateAIContent(prompt);

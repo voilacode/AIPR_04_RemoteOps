@@ -7,6 +7,7 @@ const csrf = require('csurf'); // CSRF protection
 const coreRoutes = require('./routes/coreRoutes'); // Core routes
 const authRoutes = require('./routes/authRoutes'); // Authentication routes
 const aiRoutes = require('./routes/aiRoutes'); // AI routes
+const taskRoutes = require('./routes/taskRoutes'); // AI routes
 
 // Initialize Express app
 const app = express();
@@ -24,6 +25,15 @@ app.use(cookieParser());
 const csrfProtection = csrf({ cookie: true });
 app.use(csrfProtection);
 app.use(express.json()); // Ensure the body is being parsed as JSON
+
+app.use((req, res, next) => {
+  if (req.path.startsWith("/update")) {
+      return next(); // ✅ Bypass CSRF for API routes
+  }
+  res.locals.csrfToken = req.csrfToken(); // ✅ Pass token to views
+  next();
+});
+
 
 // Session setup
 app.use(
@@ -57,6 +67,7 @@ app.use((req, res, next) => {
 app.use('/', authRoutes);
 app.use('/', coreRoutes);
 app.use('/', aiRoutes);
+app.use('/', taskRoutes);
 
 // Start the server
 app.listen(3000, () => {
