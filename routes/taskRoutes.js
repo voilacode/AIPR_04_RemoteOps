@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const taskController = require("../controllers/taskController");
+const { ensureAuthenticated } = require('../middlewares/authMiddleware');
 
-router.get("/", taskController.getTasks);
-router.get("/create", taskController.showCreateForm);
-router.post("/create", taskController.createTask);
-router.post("/update", taskController.updateTaskStatus); // Add this route
-router.get("/edit/:id", taskController.editTaskForm);
-router.post("/edit/:id", taskController.editTask);
+router.get("/", ensureAuthenticated, taskController.getTasks);
+router.get("/create", ensureAuthenticated, taskController.showCreateForm);
+router.post("/create", ensureAuthenticated, taskController.createTask);
+router.post("/update", ensureAuthenticated, taskController.updateTaskStatus); 
+router.get("/edit/:id", ensureAuthenticated, taskController.editTaskForm);
+router.post("/edit/:id", ensureAuthenticated, taskController.editTask);
 
 module.exports = router;
