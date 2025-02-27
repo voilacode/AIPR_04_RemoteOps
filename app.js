@@ -4,10 +4,10 @@ const session = require('express-session'); // Session management
 const bodyParser = require('body-parser'); // Parsing request bodies
 const cookieParser = require('cookie-parser'); // Parsing cookies
 const csrf = require('csurf'); // CSRF protection
-const coreRoutes = require('./routes/coreRoutes'); // Core routes
 const authRoutes = require('./routes/authRoutes'); // Authentication routes
 const aiRoutes = require('./routes/aiRoutes'); // AI routes
 const taskRoutes = require('./routes/taskRoutes'); // AI routes
+const projectRoutes = require('./routes/projectRoutes'); // AI routes
 
 // Initialize Express app
 const app = express();
@@ -65,9 +65,9 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/', authRoutes);
-app.use('/', coreRoutes);
 app.use('/', aiRoutes);
 app.use('/', taskRoutes);
+app.use('/project', projectRoutes);
 
 // Start the server
 app.listen(3000, () => {

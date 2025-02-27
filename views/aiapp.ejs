@@ -23,27 +23,27 @@
         </div>
       </nav>
 
-      <main class="p-6 px-16">
-        <div class="">
-          <h1 class="text-2xl font-semibold my-8">AI Content Generator</h1>
-          <form action="/aiapp" method="POST" class="p-8 bg-white shadow-md rounded">
-              <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-              <textarea name="prompt" rows="4" class="resize-none p-2 mb-4 border rounded border border-gray-200 focus: border-gray-200  w-full" placeholder="Enter your prompt..."></textarea>
-              <button type="submit" class=" p-2 mt-2 bg-pink-600 px-4 text-white rounded">Generate Result</button>
-          </form>
+      <main class="p-6 px-16 mb-20">
+        <div>
+            <h1 class="text-2xl font-semibold my-8">Query Bot</h1>
+            <form action="/aiapp" method="POST" class="p-8 bg-white shadow-md rounded">
+                <label for="" class="block text-gray-800 text-lg font-semibold pb-4">Enter your Query</label>
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <textarea name="prompt" rows="4" class="resize-none p-4 mb-4 border rounded w-full" placeholder="Enter your query..."></textarea>
+                <p class="text-sm text-gray-600 pb-2 italic">Try prompt like "How many ongoing projects?"</p>
+                <button type="submit" class="p-2 mt-2 bg-pink-600 px-4 text-white rounded">Get Answer</button>
+            </form>
         </div>
         <div>
-          <% if (content && content !== "") { %>
-            <div class="bg-white p-6 my-4 shadow-md rounded-md">
-              <h3 class="pb-3 font-semibold text-lg">Result</h3>
-              <div>
-                <%= content %>
-              </div>
-            </div>
-            <div class="p-10"></div> 
-          <% } %>
+            <% if (content) { %>
+                <div class="bg-white p-6 my-4 shadow-md rounded-md">
+                    <h3 class="pb-3 font-semibold text-lg">Result</h3>
+                    <pre class="bg-gray-100 p-4 rounded"><%= content %></pre>
+                </div>
+            <% } %>
         </div>
-      </main>
+    </main>
+    
       
       <footer class="bg-pink-900 p-4 shadow-md text-center text-white fixed bottom-0 w-full mt-28 border-t border-pink-400 mt-20">
         &#169; RemoteOps

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Task</title>
+    <meta name="csrf-token" content="<%= csrfToken %>">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-pink-50">
+    <nav class="bg-pink-900 p-4 shadow-md">
+        <div class="px-10 mx-auto flex justify-between items-center">
+          <h1 class="text-white text-2xl font-semibold"><a href="/" class="text-white">RemoteOps</a></h1>
+          <div class="flex space-x-4">  
+            <a href="/" class="text-white text-sm  bg-pink-600 duration-300 ease-in-out hover:bg-pink-500 px-4 py-2 rounded">Home</a>
+            <a href="/aiapp" class="text-white text-sm  bg-pink-600 duration-300 ease-in-out hover:bg-pink-500 px-4 py-2 rounded">AI App</a>
+            <a href="/profile" class="text-white text-sm  bg-pink-600 duration-300 ease-in-out hover:bg-pink-500 px-4 py-2 rounded">Profile</a>
+            <% if (user && user.role !== 'user') { %>  
+              <a href="/admin" class="text-white text-sm  bg-pink-600 duration-300 ease-in-out hover:bg-pink-500 px-4 py-2 rounded">Admin</a>
+            <% } %>
+            <a href="/logout" class="text-white text-sm  bg-pink-600 duration-300 ease-in-out hover:bg-pink-500 px-4 py-2 rounded">Logout</a>
+          </div>
+        </div>
+      </nav>
+
+      <main class="p-6 px-10 mb-20">
+        <div class="container mx-auto p-6">
+            <h1 class="text-3xl font-semibold text-center text-pink-800 mb-6">Users and Their Assigned Projects & Tasks</h1>
+            
+            <% users.forEach((user, index) => { %>
+                <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+                    <h2 class="text-xl font-semibold text-pink-600"><%= index+1 %>. <%= user.name %> (<%= user.role %>)</h2>
+                    <p class="text-gray-600 text-sm">Email: <%= user.email %></p>
+        
+                    <% if (user.projects.size > 0) { %>
+                        <% user.projects.forEach((project, index) => { %>
+                            <div class="mt-4 p-3 border rounded-lg bg-gray-100 text-sm">
+                                <h3 class="font-semibold text-blue-700"><%= project.name %></h3>
+                                
+                                <% if (project.tasks.length > 0) { %>
+                                    <ul class="mt-2">
+                                        <% project.tasks.forEach((task, index) => { %>
+                                            <li class="mt-1 p-2 bg-white shadow-sm rounded-md border-l-4 border-blue-500">
+                                                <span class="font-medium"><%= index+1 %>. <%= task.name %></span> - 
+                                                <span class="text-sm text-gray-600"><%= task.status %></span>
+                                            </li>
+                                        <% }) %>
+                                    </ul>
+                                <% } else { %>
+                                    <p class="text-gray-500 text-sm">No tasks assigned.</p>
+                                <% } %>
+                            </div>
+                        <% }) %>
+                    <% } else { %>
+                        <p class="mt-2 text-gray-500 text-sm">No projects assigned.</p>
+                    <% } %>
+                </div>
+            <% }) %>
+        </div>
+        </main>
+
+        <footer class="bg-pink-900 p-4 shadow-md text-center text-white fixed bottom-0 w-full mt-28 border-t border-pink-400 mt-20">
+            &#169; RemoteOps
+        </footer>
+</body>
+</html>

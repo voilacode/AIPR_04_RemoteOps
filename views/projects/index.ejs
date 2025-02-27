@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects</title>
+    <meta name="csrf-token" content="<%= csrfToken %>">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-pink-50">
+    <nav class="bg-pink-900 p-4 shadow-md">
+        <div class="px-10 mx-auto flex justify-between items-center">
+            <h1 class="text-white text-2xl font-semibold"><a href="/" class="text-white">RemoteOps</a></h1>
+            <div class="flex space-x-4">  
+                <a href="/" class="text-white text-sm bg-pink-600 duration-300 ease-in-out hover:bg-pink-500 px-4 py-2 rounded">Home</a>
+                <a href="/aiapp" class="text-white text-sm bg-pink-600 duration-300 ease-in-out hover:bg-pink-500 px-4 py-2 rounded">AI App</a>
+                <a href="/profile" class="text-white text-sm bg-pink-600 duration-300 ease-in-out hover:bg-pink-500 px-4 py-2 rounded">Profile</a>
+                <% if (user && user.role !== 'user') { %>  
+                    <a href="/admin" class="text-white text-sm bg-pink-600 duration-300 ease-in-out hover:bg-pink-500 px-4 py-2 rounded">Admin</a>
+                <% } %>
+                <a href="/logout" class="text-white text-sm bg-pink-600 duration-300 ease-in-out hover:bg-pink-500 px-4 py-2 rounded">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="p-6 px-10 mb-20">
+        <div class="flex justify-between items-center px-12">
+            <h1 class="text-2xl font-semibold text-center text-gray-700 mb-8">Project List</h1>
+            <a href="/project/create" class="p-3 px-6 bg-pink-600 text-white rounded-lg shadow-md hover:bg-pink-500 transition flex space-x-2">
+                <svg class="w-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3 5.25C3 4.00736 4.00736 3 5.25 3H18.75C19.9926 3 21 4.00736 21 5.25V12.0218C19.9897 11.375 18.7886 11 17.5 11C13.9101 11 11 13.9101 11 17.5C11 18.7886 11.375 19.9897 12.0218 21H5.25C4.00736 21 3 19.9926 3 18.75V5.25ZM10.2803 8.78033C10.5732 8.48744 10.5732 8.01256 10.2803 7.71967C9.98744 7.42678 9.51256 7.42678 9.21967 7.71967L7.75 9.18934L7.28033 8.71967C6.98744 8.42678 6.51256 8.42678 6.21967 8.71967C5.92678 9.01256 5.92678 9.48744 6.21967 9.78033L7.21967 10.7803C7.51256 11.0732 7.98744 11.0732 8.28033 10.7803L10.2803 8.78033ZM10.2803 14.2803C10.5732 13.9874 10.5732 13.5126 10.2803 13.2197C9.98744 12.9268 9.51256 12.9268 9.21967 13.2197L7.75 14.6893L7.28033 14.2197C6.98744 13.9268 6.51256 13.9268 6.21967 14.2197C5.92678 14.5126 5.92678 14.9874 6.21967 15.2803L7.21967 16.2803C7.51256 16.5732 7.98744 16.5732 8.28033 16.2803L10.2803 14.2803ZM13.25 8.5C12.8358 8.5 12.5 8.83579 12.5 9.25C12.5 9.66421 12.8358 10 13.25 10H16.75C17.1642 10 17.5 9.66421 17.5 9.25C17.5 8.83579 17.1642 8.5 16.75 8.5H13.25Z" fill="#ffffff"></path> <path d="M23 17.5C23 14.4624 20.5376 12 17.5 12C14.4624 12 12 14.4624 12 17.5C12 20.5376 14.4624 23 17.5 23C20.5376 23 23 20.5376 23 17.5ZM18.0006 18L18.0011 20.5035C18.0011 20.7797 17.7773 21.0035 17.5011 21.0035C17.225 21.0035 17.0011 20.7797 17.0011 20.5035L17.0006 18H14.4961C14.22 18 13.9961 17.7762 13.9961 17.5C13.9961 17.2239 14.22 17 14.4961 17H17.0005L17 14.4993C17 14.2231 17.2239 13.9993 17.5 13.9993C17.7761 13.9993 18 14.2231 18 14.4993L18.0005 17H20.503C20.7792 17 21.003 17.2239 21.003 17.5C21.003 17.7762 20.7792 18 20.503 18H18.0006Z" fill="#ffffff"></path> </g></svg>
+                <span>Create Project</span>
+            </a>
+        </div>
+        <div class="px-10 mx-auto">
+            <ul class="space-y-2 flex w-full items-center flex-wrap">
+                <% projects.forEach((project, index) => { %>
+                    <li class="bg-white p-4 rounded-lg shadow-md flex justify-between items-center mx-2" style="width: 28vw;">
+                        <div>
+                            <h1 class="text-pink-800 font-semibold text-lg"><%= index+1 %>. <%= project.title %></h1>
+                            <p class="text-gray-600 text-sm">Lead: <i><%= project.lead_name %></i></p>
+                            <p class="text-gray-600 text-sm">Deadline: <i><%= new Date(project.deadline).toDateString() %></i>
+                            </i></p>
+                        </div>
+                        <div class="flex space-x-4">
+                            <a href="/project/edit/<%= project.id %>" class="text-pink-600 hover:text-pink-800">
+                                <svg class="w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path fill-rule="evenodd" clip-rule="evenodd" d="m3.99 16.854-1.314 3.504a.75.75 0 0 0 .966.965l3.503-1.314a3 3 0 0 0 1.068-.687L18.36 9.175s-.354-1.061-1.414-2.122c-1.06-1.06-2.122-1.414-2.122-1.414L4.677 15.786a3 3 0 0 0-.687 1.068zm12.249-12.63 1.383-1.383c.248-.248.579-.406.925-.348.487.08 1.232.322 1.934 1.025.703.703.945 1.447 1.025 1.934.058.346-.1.677-.348.925L19.774 7.76s-.353-1.06-1.414-2.12c-1.06-1.062-2.121-1.415-2.121-1.415z" fill="#25b182"></path></g></svg>
+                            </a>
+                            <form action="/project/delete/<%= project.id %>" method="POST" class="inline">
+                                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                                <button type="submit" class="text-red-600 hover:text-red-800">
+                                    <svg class="w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M4 7H20" stroke="#ed0707" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M6 10L7.70141 19.3578C7.87432 20.3088 8.70258 21 9.66915 21H14.3308C15.2974 21 16.1257 20.3087 16.2986 19.3578L18 10" stroke="#ed0707" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5V7H9V5Z" stroke="#ed0707" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                                </button>
+                            </form>
+                        </div>
+                    </li>
+                <% }) %>
+            </ul>
+        </div>
+    </main>
+
+    <footer class="bg-pink-900 p-4 shadow-md text-center text-white fixed bottom-0 w-full border-t border-pink-400">
+        &#169; RemoteOps
+    </footer>
+</body>
+</html>

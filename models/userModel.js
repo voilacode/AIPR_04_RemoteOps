@@ -2,6 +2,13 @@ const db = require('../config/db');
 const csrf = require('csurf');
 const csrfProtection = csrf({ cookie: true });
 
+class User {
+  static async getAllUsers() {
+      const [rows] = await db.query('SELECT id, name FROM users');
+      return rows;
+  }
+}
+
 // Register a new user in the database
 exports.registerUser = async (
   name,
@@ -38,10 +45,6 @@ exports.findUserByEmail = (email, callback) => {
 // Find user by ID
 exports.findUserById = async (id, callback) => {
   const query = 'SELECT * FROM users WHERE id = ?';
-  console.log(
-    'Log: Executed FindUserById from user model, where user id is ',
-    id
-  );
 
   try {
     const [results, fields] = await db.query(query, [id]);

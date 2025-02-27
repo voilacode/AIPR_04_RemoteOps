@@ -1,9 +1,15 @@
 const db = require("../config/db");
 
-// Fetch tasks and render the index page
 exports.getTasks = async (req, res) => {
     try {
-        const [results] = await db.query("SELECT * FROM tasks");  // Use `await`
+        const [results] = await db.query(`
+            SELECT tasks.id, tasks.title, tasks.description, tasks.status, tasks.project_id, 
+                   projects.title AS project_name, users.name AS user_name 
+            FROM tasks 
+            LEFT JOIN projects ON tasks.project_id = projects.id
+            LEFT JOIN users ON tasks.user_id = users.id
+        `);
+        
         res.render("index", { tasks: results, user: req.session.user });
     } catch (err) {
         console.error("Error fetching tasks:", err);
@@ -11,18 +17,42 @@ exports.getTasks = async (req, res) => {
     }
 };
 
-exports.showCreateForm = (req, res) => {
-    res.render("create", { csrfToken: req.csrfToken(), user: req.session.user });
+exports.showCreateForm = async (req, res) => {
+    try {
+        const [projects] = await db.query("SELECT * FROM projects");
+        const [users] = await db.query("SELECT id, name FROM users");
+        res.render("create", { csrfToken: req.csrfToken(), user: req.session.user, projects, users });
+    } catch (err) {
+        console.error("Error fetching data:", err);
+        res.status(500).send("Error fetching data");
+    }
 };
 
 exports.createTask = async (req, res) => {
     try {
-        const { title, description } = req.body;
-        await db.query("INSERT INTO tasks (title, description, status) VALUES (?, ?, 'New')", [title, description]);  // Use `await`
+        const { title, description, project_id } = req.body;
+        await db.query("INSERT INTO tasks (title, description, status, project_id) VALUES (?, ?, 'New', ?)", [title, description, project_id]);
         res.redirect("/");
     } catch (err) {
         console.error("Error creating task:", err);
         res.status(500).send("Error creating task");
+    }
+};
+
+exports.editTask = async (req, res) => {
+    try {
+        const { title, description, project_id, user_id } = req.body;
+        const taskId = req.params.id;
+
+        await db.query(
+            "UPDATE tasks SET title = ?, description = ?, project_id = ?, user_id = ? WHERE id = ?",
+            [title, description, project_id, user_id, taskId]
+        );
+
+        res.redirect('/');
+    } catch (err) {
+        console.error("Error updating task:", err);
+        res.status(500).send("Error updating task");
     }
 };
 
@@ -49,26 +79,15 @@ exports.updateTaskStatus = async (req, res) => {
 exports.editTaskForm = async (req, res) => {
     try {
         const [task] = await db.query("SELECT * FROM tasks WHERE id = ?", [req.params.id]);
+        const [users] = await db.query("SELECT id, name FROM users");
         if (task.length === 0) {
             return res.status(404).send("Task not found");
         }
-        res.render('edit', { task: task[0], csrfToken: req.csrfToken(), user: req.session.user });
+
+        const [projects] = await db.query("SELECT * FROM projects");
+        res.render("edit", { task: task[0], csrfToken: req.csrfToken(), user: req.session.user, projects, users });
     } catch (err) {
         console.error(err);
         res.status(500).send("Error fetching task details");
     }
 };
-
-exports.editTask = async (req, res) => {
-    try {
-        const { title, description } = req.body;
-        const taskId = req.params.id;
-
-        await db.query("UPDATE tasks SET title = ?, description = ? WHERE id = ?", [title, description, taskId]);
-
-        res.redirect('/');  
-    } catch (err) {
-        console.error(err);
-        res.status(500).send("Error updating task");
-    }
-}

@@ -7,7 +7,7 @@ const router = express.Router();
 
 // Route to render the registration page
 router.get('/register', (req, res) => {
-  const error = req.query.error || null; // Get the error from the URL query if it exists
+  const error = req.query.error || null; 
   res.render('register', { error, csrfToken: req.csrfToken() });
 });
 
@@ -16,7 +16,7 @@ router.post('/register', authController.registerUser);
 
 // Route to render the login page
 router.get('/login', (req, res) => {
-  const error = req.query.error || null; // Get the error from the URL query if it exists
+  const error = req.query.error || null; 
   res.render('login', { error, csrfToken: req.csrfToken() });
 });
 
@@ -30,6 +30,6 @@ router.get('/logout', authController.logout);
 router.get('/profile', ensureAuthenticated, profileController.getProfile);
 
 // Route to render the admin page for authenticated admins
-router.get('/admin', ensureAuthenticated, adminController.adminPage);
+router.get("/admin", ensureAuthenticated, adminController.getUsersWithTasks);
 
 module.exports = router;

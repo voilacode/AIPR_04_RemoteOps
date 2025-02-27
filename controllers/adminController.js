@@ -1,75 +1,65 @@
-// Import user model
+const db = require("../config/db");
 const userModel = require('../models/userModel');
 
-exports.adminPage = (req, res) => {
-  const currentUser = req.session.user;
-
-  // Redirect if not logged in
-  if (!currentUser) {
-    return res.redirect('/login');
+exports.getUsersWithTasks = async (req, res) => {
+  if (req.session.user.role === 'user') {
+    return res.redirect('/');
   }
 
-  // Deny access if not an admin
-  if (currentUser.role === 'user') {
-    return res.status(401).send(`
-      <html>
-        <head>
-          <title>Unauthorized</title>
-          <style>
-            body {
-              font-family: Arial, sans-serif;
-              background-color: #f4f4f4;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              height: 100vh;
-              margin: 0;
-            }
-            .message {
-              text-align: center;
-              background-color: #fff;
-              padding: 40px;
-              border-radius: 8px;
-              box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-              max-width: 450px;
-              width: 100%;
-            }
-            h1 {
-              color: #e74c3c;
-              margin-bottom: 20px;
-            }
-            button {
-              background-color: #3498db;
-              color: white;
-              padding: 12px 20px;
-              border: none;
-              border-radius: 5px;
-              cursor: pointer;
-            }
-            button:hover {
-              background-color: #2980b9;
-            }
-          </style>
-        </head>
-        <body>
-          <div class="message">
-            <h1>Unauthorized Access</h1>
-            <p>You do not have permission to view this page.</p>
-            <a href="/" style="text-decoration: none;">
-              <button>Go Back</button>
-            </a>
-          </div>
-        </body>
-      </html>
+  try {
+    const [users] = await db.query(`
+      SELECT users.id, users.name, users.email, users.role, 
+             projects.id AS project_id, projects.title AS project_name,
+             tasks.id AS task_id, tasks.title AS task_name, tasks.status
+      FROM users
+      LEFT JOIN tasks ON users.id = tasks.user_id
+      LEFT JOIN projects ON tasks.project_id = projects.id
+      ORDER BY users.id, projects.id, tasks.id
     `);
-  }
 
-  // Fetch and display all users
-  userModel.getAllUsers((err, results) => {
-    if (err) {
-      console.error(err);
-      return res.redirect('/');
-    }
-    res.render('admin', { users: results, user: currentUser });
-  });
+    const userMap = new Map();
+
+    users.forEach(row => {
+      if (!userMap.has(row.id)) {
+        userMap.set(row.id, {
+          id: row.id,
+          name: row.name,
+          email: row.email,
+          role: row.role,
+          projects: new Map(),
+          standaloneTasks: []
+        });
+      }
+
+      const userData = userMap.get(row.id);
+
+      if (row.project_id) {
+        if (!userData.projects.has(row.project_id)) {
+          userData.projects.set(row.project_id, {
+            id: row.project_id,
+            name: row.project_name,
+            tasks: []
+          });
+        }
+        if (row.task_id) {
+          userData.projects.get(row.project_id).tasks.push({
+            id: row.task_id,
+            name: row.task_name,
+            status: row.status
+          });
+        }
+      } else if (row.task_id) {
+        userData.standaloneTasks.push({
+          id: row.task_id,
+          name: row.task_name,
+          status: row.status
+        });
+      }
+    });
+
+    res.render("users", { users: Array.from(userMap.values()), user: req.session.user });
+  } catch (err) {
+    console.error("Error fetching users with tasks:", err);
+    res.status(500).send("Error fetching users with tasks");
+  }
 };

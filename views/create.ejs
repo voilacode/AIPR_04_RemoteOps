@@ -23,24 +23,45 @@
         </div>
       </nav>
 
-      <main class="p-6 px-10">
+      <main class="p-6 px-10 mb-20">
             <h1 class="text-3xl font-semibold text-center text-gray-700 mb-8">Create Task</h1>
 
             <form action="/create" method="POST" class="bg-white p-6 rounded-lg shadow-lg max-w-lg mx-auto">
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-
-                <div class="mb-4">
-                    <label for="title" class="block text-lg font-medium text-pink-800">Task Title</label>
-                    <input type="text" id="title" name="title" placeholder="Enter task title" required class="mt-2 border-2 border-gray-300 p-3 w-full rounded-lg focus:ring-2 focus:ring-pink-500">
-                </div>
-
-                <div class="mb-6">
-                    <label for="description" class="block text-lg font-medium text-pink-800">Task Description</label>
-                    <textarea id="description" name="description" placeholder="Enter task description" required class="mt-2 border-2 border-gray-300 p-3 w-full rounded-lg focus:ring-2 focus:ring-pink-500"></textarea>
-                </div>
-
-                <button type="submit" class="w-full py-3 bg-pink-600 text-white font-semibold rounded-lg hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-colors">Create Task</button>
-            </form>
+              <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+          
+              <div class="mb-4">
+                  <label for="title" class="block text-lg font-medium text-pink-800">Task Title</label>
+                  <input type="text" id="title" name="title" placeholder="Enter task title" required class="mt-2 border-2 border-gray-300 p-3 w-full rounded-lg focus:ring-2 focus:ring-pink-500">
+              </div>
+          
+              <div class="mb-4">
+                  <label for="description" class="block text-lg font-medium text-pink-800">Task Description</label>
+                  <textarea id="description" name="description" placeholder="Enter task description" required class="mt-2 border-2 border-gray-300 p-3 w-full rounded-lg focus:ring-2 focus:ring-pink-500"></textarea>
+              </div>
+          
+              <div class="mb-4">
+                  <label for="project" class="block text-lg font-medium text-pink-800">Project</label>
+                  <select id="project" name="project_id" required class="mt-2 border-2 border-gray-300 p-3 w-full rounded-lg focus:ring-2 focus:ring-pink-500">
+                      <% projects.forEach(project => { %>
+                          <option value="<%= project.id %>"><%= project.title %></option>
+                      <% }); %>
+                  </select>
+              </div>
+          
+              <div class="mb-6">
+                  <label for="user" class="block text-lg font-medium text-pink-800">Assign to User</label>
+                  <select id="user" name="user_id" required class="mt-2 border-2 border-gray-300 p-3 w-full rounded-lg focus:ring-2 focus:ring-pink-500">
+                      <% users.forEach(user => { %>
+                          <option value="<%= user.id %>"><%= user.name %></option>
+                      <% }); %>
+                  </select>
+              </div>
+          
+              <button type="submit" class="w-full py-3 bg-pink-600 text-white font-semibold rounded-lg hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-colors">
+                  Assign
+              </button>
+          </form>          
+          
         </main>
 
         <footer class="bg-pink-900 p-4 shadow-md text-center text-white fixed bottom-0 w-full mt-28 border-t border-pink-400 mt-20">
