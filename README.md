@@ -76,6 +76,7 @@ CREATE TABLE projects (
     title VARCHAR(255) NOT NULL,
     description TEXT,
     project_lead INT,
+    deadline datetime,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (project_lead) REFERENCES users(id) ON DELETE SET NULL
 );
