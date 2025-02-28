@@ -61,6 +61,15 @@ exports.updateProject = async (req, res) => {
 
 exports.deleteProject = async (req, res) => {
     try {
+        const project = await Project.getProjectById(req.params.id);
+        if (!project) {
+            return res.status(404).send("Project not found");
+        }
+
+        if (project.project_lead !== req.session.user.id) {
+            return res.status(403).send("<script>alert('Access denied: Only the project lead can delete this project.'); window.location='/project';</script>");
+        }
+
         await Project.deleteProject(req.params.id);
         res.redirect("/project");
     } catch (error) {
