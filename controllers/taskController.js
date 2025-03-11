@@ -3,14 +3,14 @@ const db = require("../config/db");
 exports.getTasks = async (req, res) => {
     try {
         const [results] = await db.query(`
-            SELECT tasks.id, tasks.title, tasks.description, tasks.status, tasks.project_id, 
+            SELECT tasks.id, tasks.title, tasks.description, tasks.status, tasks.deadline, tasks.project_id, 
                    projects.title AS project_name, users.name AS user_name 
             FROM tasks 
             LEFT JOIN projects ON tasks.project_id = projects.id
             LEFT JOIN users ON tasks.user_id = users.id
         `);
         
-        res.render("index", { tasks: results, user: req.session.user });
+        res.render("index", { tasks: results, user: req.session.user, csrfToken: req.csrfToken() });
     } catch (err) {
         console.error("Error fetching tasks:", err);
         res.status(500).send("Error fetching tasks");
@@ -30,8 +30,8 @@ exports.showCreateForm = async (req, res) => {
 
 exports.createTask = async (req, res) => {
     try {
-        const { title, description, project_id } = req.body;
-        await db.query("INSERT INTO tasks (title, description, status, project_id) VALUES (?, ?, 'New', ?)", [title, description, project_id]);
+        const { title, description, project_id, deadline } = req.body;
+        await db.query("INSERT INTO tasks (title, description, status, project_id, deadline) VALUES (?, ?, DEFAULT, ?, ?)", [title, description, project_id, deadline]);
         res.redirect("/");
     } catch (err) {
         console.error("Error creating task:", err);
@@ -41,12 +41,12 @@ exports.createTask = async (req, res) => {
 
 exports.editTask = async (req, res) => {
     try {
-        const { title, description, project_id, user_id } = req.body;
+        const { title, description, project_id, user_id, deadline } = req.body;
         const taskId = req.params.id;
 
         await db.query(
-            "UPDATE tasks SET title = ?, description = ?, project_id = ?, user_id = ? WHERE id = ?",
-            [title, description, project_id, user_id, taskId]
+            "UPDATE tasks SET title = ?, description = ?, project_id = ?, deadline = ?, user_id = ? WHERE id = ?",
+            [title, description, project_id, deadline, user_id, taskId]
         );
 
         res.redirect('/');

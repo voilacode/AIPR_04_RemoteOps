@@ -68,6 +68,18 @@ app.use('/', authRoutes);
 app.use('/', aiRoutes);
 app.use('/', taskRoutes);
 app.use('/project', projectRoutes);
+app.post('/update-task-status/:id', async (req, res) => {
+  try {
+      const { status } = req.body;
+      const { id } = req.params;
+      
+      await db.query("UPDATE tasks SET status = ? WHERE id = ?", [status, id]);
+      res.json({ success: true });
+  } catch (err) {
+      console.error("Error updating task status:", err);
+      res.status(500).json({ success: false });
+  }
+});
 
 // Start the server
 app.listen(3000, () => {

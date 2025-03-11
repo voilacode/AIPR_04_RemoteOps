@@ -46,7 +46,7 @@
                       <option value="<%= user.id %>" <%= user.id === task.user_id ? 'selected' : '' %>><%= user.name %></option>
                   <% }); %>
               </select>
-          </div>          
+          </div>
 
             <div class="mb-6">
               <label for="project" class="block text-lg font-medium text-pink-800">Project</label>
@@ -55,7 +55,18 @@
                       <option value="<%= project.id %>" <%= project.id === task.project_id ? 'selected' : '' %>><%= project.title %></option>
                   <% }); %>
               </select>
-          </div>          
+          </div> 
+          
+          <div class="mb-4">
+            <label for="deadline" class="block text-lg font-medium text-pink-800">Task Deadline</label>
+            <input
+              type="date"
+              id="deadline"
+              name="deadline"
+              required
+              class="mt-2 border-2 border-gray-300 p-3 w-full rounded-lg focus:ring-2 focus:ring-pink-500"
+            />
+          </div>         
 
             <button type="submit" class="w-full py-3 bg-pink-600 text-white font-semibold rounded-lg hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-colors">Update Task</button>
         </form>

@@ -39,33 +39,53 @@
             </div>
             
         </div>
-    
+        <p class="text-sm text-gray-500 italic text-center my-4">Drag and Drop the task to progress the pipeline.</p>
+
         <!-- Task Board -->
         <div class="grid grid-cols-5 gap-4">
-            <% ['New', 'Assigned', 'Ongoing', 'Rejected', 'Completed'].forEach(state => { %>
+            <% ['New', 'Ongoing', 'Verification', 'Rejected', 'Completed'].forEach(state => { %>
                 <div class="w-full bg-white shadow-lg rounded-lg">
                     <h2 class="text-lg font-semibold text-center p-2 border-b-2"><%= state %></h2>
                     <div class="task-container min-h-[200px] p-4 space-y-2" data-status="<%= state %>">
                         <% tasks.filter(task => task.status === state).forEach(task => { %>
                             <div class="task bg-gray-100 p-4 rounded-lg shadow-md hover:bg-gray-200 transition cursor-pointer"
-                                draggable="true"
-                                data-id="<%= task.id %>">
-                                <div class="flex flex-col">
-                                    <span class="font-semibold text-gray-800"><%= task.title %></span>
-                                    <p class="text-gray-600 text-sm"><%= task.description %></p>
-                                    <p class="text-xs text-gray-500 italic">
-                                        Project: <span class="font-medium"><%= task.project_name || "Unassigned" %></span>
-                                    </p>
-                                    <p class="text-xs text-gray-500 italic">
-                                        Assigned to: <span class="font-medium"><%= task.user_name || "Unassigned" %></span>
-                                    </p>
-                                </div>
-                                <div class="flex justify-end mt-2">
-                                    <a href="/edit/<%= task.id %>" class="text-pink-600 hover:text-pink-800">
-                                        <svg class="w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path fill-rule="evenodd" clip-rule="evenodd" d="m3.99 16.854-1.314 3.504a.75.75 0 0 0 .966.965l3.503-1.314a3 3 0 0 0 1.068-.687L18.36 9.175s-.354-1.061-1.414-2.122c-1.06-1.06-2.122-1.414-2.122-1.414L4.677 15.786a3 3 0 0 0-.687 1.068zm12.249-12.63 1.383-1.383c.248-.248.579-.406.925-.348.487.08 1.232.322 1.934 1.025.703.703.945 1.447 1.025 1.934.058.346-.1.677-.348.925L19.774 7.76s-.353-1.06-1.414-2.12c-1.06-1.062-2.121-1.415-2.121-1.415z" fill="#f000c4"></path></g></svg>
-                                    </a>
-                                </div>
+                            draggable="true"
+                            data-id="<%= task.id %>"
+                            data-status="<%= task.status %>">
+                            <div class="flex flex-col">
+                                <span class="font-semibold text-gray-800"><%= task.title %></span>
+                                <p class="text-gray-600 text-sm"><%= task.description %></p>
+                                <p class="text-xs text-gray-500 italic">
+                                    Project: <span class="font-medium"><%= task.project_name || "Unassigned" %></span>
+                                </p>
+                                <p class="text-xs text-gray-500 italic">
+                                    Assigned to: <span class="font-medium"><%= task.user_name || "Unassigned" %></span>
+                                </p>
+                                <p class="text-xs text-gray-500 italic">
+                                    Deadline: <span class="font-medium"><%= task.deadline %></span>
+                                </p>
                             </div>
+                            <div class="flex justify-between space-x-2 items-center mt-1">
+                                <div class="flex space-x-2 mt-2">
+                                    <% if (user && user.role !== 'user') { %>  
+
+                                    <button class="bg-blue-500 text-white px-3 py-1 rounded-md text-xs hover:bg-blue-700 transition"
+                                        onclick="moveToNextStage('<%= task.id %>', '<%= task.status %>')">
+                                        Completed
+                                    </button>
+                                    <button class="bg-red-500 text-white px-3 py-1 rounded-md text-xs hover:bg-red-700 transition"
+                                        onclick="revertToPreviousStage('<%= task.id %>', '<%= task.status %>')">
+                                        Revert
+                                    </button>
+                                    <% } %>
+                                </div>
+                                <a href="/edit/<%= task.id %>" class="text-pink-600 hover:text-pink-800 mt-2">
+                                    <svg class="w-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path fill-rule="evenodd" clip-rule="evenodd" d="m3.99 16.854-1.314 3.504a.75.75 0 0 0 .966.965l3.503-1.314a3 3 0 0 0 1.068-.687L18.36 9.175s-.354-1.061-1.414-2.122c-1.06-1.06-2.122-1.414-2.122-1.414L4.677 15.786a3 3 0 0 0-.687 1.068zm12.249-12.63 1.383-1.383c.248-.248.579-.406.925-.348.487.08 1.232.322 1.934 1.025.703.703.945 1.447 1.025 1.934.058.346-.1.677-.348.925L19.774 7.76s-.353-1.06-1.414-2.12c-1.06-1.062-2.121-1.415-2.121-1.415z" fill="#f000c4"></path></g></svg>
+                                </a>
+                            </div>
+                            
+                        </div>
+                        
                         <% }) %>
                     </div>
                 </div>
@@ -78,6 +98,64 @@
     <footer class="bg-pink-900 p-4 shadow-md text-center text-white fixed bottom-0 w-full mt-28 border-t border-pink-400 mt-20">
         &#169; RemoteOps
     </footer>
+    
+    <script>
+        const statusOrder = ["New", "Ongoing", "Verification", "Rejected", "Completed"];
+    
+        async function moveToNextStage(taskId, currentStatus) {
+            const nextStatusIndex = statusOrder.indexOf(currentStatus) + 1;
+    
+            if (nextStatusIndex < statusOrder.length) {
+                const nextStatus = statusOrder[nextStatusIndex];
+    
+                try {
+                    const response = await fetch("/update-task-status", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-Token": "<%= csrfToken %>"
+                        },
+                        body: JSON.stringify({ id: taskId, status: nextStatus })
+                    });
+    
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        console.error("Error updating task status.");
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                }
+            }
+        }
+    
+        async function revertToPreviousStage(taskId, currentStatus) {
+            const prevStatusIndex = statusOrder.indexOf(currentStatus) - 1;
+    
+            if (prevStatusIndex >= 0) {
+                const prevStatus = statusOrder[prevStatusIndex];
+    
+                try {
+                    const response = await fetch("/update-task-status", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-Token": "<%= csrfToken %>"
+                        },
+                        body: JSON.stringify({ id: taskId, status: prevStatus })
+                    });
+    
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        console.error("Error reverting task status.");
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                }
+            }
+        }
+    </script>    
     
 </body>
 </html>
