@@ -87,7 +87,7 @@ CREATE TABLE tasks (
     description TEXT,
     project_id INT,
     user_id INT,
-    status ENUM('New', 'Assigned', 'Ongoing', 'Rejected', 'Completed') DEFAULT 'New',
+    status ENUM('New', 'Ongoing', 'Verification', 'Rejected', 'Completed') DEFAULT 'New',
     FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
