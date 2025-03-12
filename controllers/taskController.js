@@ -30,8 +30,8 @@ exports.showCreateForm = async (req, res) => {
 
 exports.createTask = async (req, res) => {
     try {
-        const { title, description, project_id, deadline } = req.body;
-        await db.query("INSERT INTO tasks (title, description, status, project_id, deadline) VALUES (?, ?, DEFAULT, ?, ?)", [title, description, project_id, deadline]);
+        const { title, description, project_id, user_id, deadline } = req.body;
+        await db.query("INSERT INTO tasks (title, description, status, project_id, user_id, deadline) VALUES (?, ?, DEFAULT, ?, ?, ?)", [title, description, project_id, user_id, deadline]);
         res.redirect("/");
     } catch (err) {
         console.error("Error creating task:", err);
