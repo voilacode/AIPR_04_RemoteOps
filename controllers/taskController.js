@@ -85,6 +85,10 @@ exports.editTaskForm = async (req, res) => {
         }
 
         const [projects] = await db.query("SELECT * FROM projects");
+
+        // Format the deadline properly
+        task[0].deadline = task[0].deadline ? task[0].deadline.toISOString().split('T')[0] : '';
+
         res.render("edit", { task: task[0], csrfToken: req.csrfToken(), user: req.session.user, projects, users });
     } catch (err) {
         console.error(err);
