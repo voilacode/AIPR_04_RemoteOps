@@ -6,13 +6,29 @@
     <title>Optimized Task List</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 p-6">
-    <div class="max-w-6xl mx-auto bg-white shadow-md rounded-lg p-6">
+<body class="bg-pink-100">
+    <nav class="bg-pink-900 p-4 shadow-md">
+        <div class="px-10 mx-auto flex justify-between items-center">
+          <h1 class="text-white text-2xl font-semibold"><a href="/" class="text-white">RemoteOps</a></h1>
+          <div class="flex space-x-4">  
+            <a href="/" class="text-white text-sm  bg-pink-600 duration-300 ease-in-out hover:bg-pink-500 px-4 py-2 rounded">Home</a>
+            <a href="/aiapp" class="text-white text-sm  bg-pink-600 duration-300 ease-in-out hover:bg-pink-500 px-4 py-2 rounded">AI App</a>
+            <a href="/profile" class="text-white text-sm  bg-pink-600 duration-300 ease-in-out hover:bg-pink-500 px-4 py-2 rounded">Profile</a>
+            <% if (user && user.role !== 'user') { %>  
+              <a href="/admin" class="text-white text-sm  bg-pink-600 duration-300 ease-in-out hover:bg-pink-500 px-4 py-2 rounded">Admin</a>
+            <% } %>
+            <a href="/logout" class="text-white text-sm  bg-pink-600 duration-300 ease-in-out hover:bg-pink-500 px-4 py-2 rounded">Logout</a>
+          </div>
+        </div>
+      </nav>
+
+      <main class="p-6 px-16 mb-20">
         <h1 class="text-2xl font-semibold text-gray-800 mb-4">AI-Suggested & Prioritized Tasks</h1>
 
-        <table class="w-full border-collapse border border-gray-300 rounded-lg">
+        <table class="w-full border-collapse border border-gray-200 rounded-lg">
             <thead>
                 <tr class="bg-gray-200">
+                    <th class="border border-gray-300 p-2">SNO</th>
                     <th class="border border-gray-300 p-2">Title</th>
                     <th class="border border-gray-300 p-2">Description</th>
                     <th class="border border-gray-300 p-2">Priority</th>
@@ -23,11 +39,12 @@
                 </tr>
             </thead>
             <tbody>
-                <% tasks.forEach(task => { %>
+                <% tasks.forEach((task, i) => { %>
                     <tr class="bg-white hover:bg-gray-50">
+                        <td class="border border-gray-300 p-2"><%= ++i %></td>
                         <td class="border border-gray-300 p-2"><%= task.title %></td>
                         <td class="border border-gray-300 p-2"><%= task.description %></td>
-                        <td class="border border-gray-300 p-2 font-bold <%=
+                        <td class="border border-gray-300 p-2 font-semibold <%=
                             task.priority === 'High' ? 'text-red-500' :
                             task.priority === 'Medium' ? 'text-yellow-500' : 'text-green-500' %>">
                             <%= task.priority %>
@@ -41,7 +58,11 @@
             </tbody>
         </table>
 
-        <a href="/" class="mt-4 inline-block px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Back to Dashboard</a>
-    </div>
+        <a href="/" class="mt-4 w-fit block mx-auto px-4 py-2 bg-pink-700 text-white rounded-md hover:bg-pink duration-300">Back to Dashboard</a>
+    </main>
+
+    <footer class="bg-pink-900 p-4 shadow-md text-center text-white fixed bottom-0 w-full mt-28 border-t border-pink-400 mt-20">
+        &#169; RemoteOps
+    </footer>
 </body>
 </html>

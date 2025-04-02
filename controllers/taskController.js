@@ -88,37 +88,6 @@ exports.updateTaskStatus = async (req, res) => {
     }
 };
 
-exports.optimizeTasks = async (req, res) => {
-    try {
-        const [tasks] = await db.query(`
-            SELECT tasks.id, tasks.title, tasks.description, tasks.deadline, 
-                   projects.title AS project_name, users.name AS user_name 
-            FROM tasks 
-            LEFT JOIN projects ON tasks.project_id = projects.id
-            LEFT JOIN users ON tasks.user_id = users.id
-        `);
-
-        // Optimize tasks using AI Service
-        const optimizedTasks = await Promise.all(
-            tasks.map(async (task) => {
-                const priority = await AIService.suggestPriority(task.deadline, []);
-                const adjusted_deadline = await AIService.recommendDeadline(task.deadline, []);
-                return {
-                    ...task,
-                    priority,
-                    adjusted_deadline,
-                };
-            })
-        );
-
-        res.render("optimized", { tasks: optimizedTasks, user: req.session.user });
-    } catch (err) {
-        console.error("Error optimizing tasks:", err);
-        res.status(500).send("Error optimizing tasks");
-    }
-};
-
-
 exports.editTaskForm = async (req, res) => {
     try {
         const [task] = await db.query("SELECT * FROM tasks WHERE id = ?", [req.params.id]);
@@ -136,5 +105,36 @@ exports.editTaskForm = async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).send("Error fetching task details");
+    }
+};
+
+exports.optimizeTasks = async (req, res) => {
+    try {
+        const [tasks] = await db.query(`
+            SELECT tasks.id, tasks.title, tasks.description, tasks.deadline, 
+                   tasks.created_at, tasks.status, 
+                   projects.title AS project_name, users.name AS user_name 
+            FROM tasks 
+            LEFT JOIN projects ON tasks.project_id = projects.id
+            LEFT JOIN users ON tasks.user_id = users.id
+            ORDER BY tasks.deadline ASC, tasks.status DESC, tasks.created_at ASC
+        `);
+
+        const optimizedTasks = await Promise.all(
+            tasks.map(async (task) => {
+                const priority = await AIService.suggestPriority(task.deadline, []);
+                const adjusted_deadline = await AIService.recommendDeadline(task.deadline, []);
+                return {
+                    ...task,
+                    priority,
+                    adjusted_deadline,
+                };
+            })
+        );
+
+        res.render("optimized", { tasks: optimizedTasks, user: req.session.user });
+    } catch (err) {
+        console.error("Error optimizing tasks:", err);
+        res.status(500).send("Error optimizing tasks");
     }
 };
