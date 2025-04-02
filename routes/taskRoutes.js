@@ -10,5 +10,6 @@ router.post("/update", ensureAuthenticated, taskController.updateTaskStatus);
 router.get("/edit/:id", ensureAuthenticated, taskController.editTaskForm);
 router.post("/edit/:id", ensureAuthenticated, taskController.editTask);
 router.post("/update-task-status", taskController.updateTaskStatus);
+router.get("/optimized", taskController.optimizeTasks);
 
 module.exports = router;

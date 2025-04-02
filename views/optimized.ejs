@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimized Task List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="max-w-6xl mx-auto bg-white shadow-md rounded-lg p-6">
+        <h1 class="text-2xl font-semibold text-gray-800 mb-4">AI-Suggested & Prioritized Tasks</h1>
+
+        <table class="w-full border-collapse border border-gray-300 rounded-lg">
+            <thead>
+                <tr class="bg-gray-200">
+                    <th class="border border-gray-300 p-2">Title</th>
+                    <th class="border border-gray-300 p-2">Description</th>
+                    <th class="border border-gray-300 p-2">Priority</th>
+                    <th class="border border-gray-300 p-2">Original Deadline</th>
+                    <th class="border border-gray-300 p-2">AI-Adjusted Deadline</th>
+                    <th class="border border-gray-300 p-2">Project</th>
+                    <th class="border border-gray-300 p-2">Assigned To</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% tasks.forEach(task => { %>
+                    <tr class="bg-white hover:bg-gray-50">
+                        <td class="border border-gray-300 p-2"><%= task.title %></td>
+                        <td class="border border-gray-300 p-2"><%= task.description %></td>
+                        <td class="border border-gray-300 p-2 font-bold <%=
+                            task.priority === 'High' ? 'text-red-500' :
+                            task.priority === 'Medium' ? 'text-yellow-500' : 'text-green-500' %>">
+                            <%= task.priority %>
+                        </td>
+                        <td class="border border-gray-300 p-2"><%= task.deadline %></td>
+                        <td class="border border-gray-300 p-2"><%= task.adjusted_deadline || 'N/A' %></td>
+                        <td class="border border-gray-300 p-2"><%= task.project_name %></td>
+                        <td class="border border-gray-300 p-2"><%= task.user_name %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+
+        <a href="/" class="mt-4 inline-block px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Back to Dashboard</a>
+    </div>
+</body>
+</html>

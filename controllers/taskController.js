@@ -1,4 +1,5 @@
 const db = require("../config/db");
+const AIService = require("../services/aiService");
 
 exports.getTasks = async (req, res) => {
     try {
@@ -9,7 +10,7 @@ exports.getTasks = async (req, res) => {
             LEFT JOIN projects ON tasks.project_id = projects.id
             LEFT JOIN users ON tasks.user_id = users.id
         `);
-        
+
         res.render("index", { tasks: results, user: req.session.user, csrfToken: req.csrfToken() });
     } catch (err) {
         console.error("Error fetching tasks:", err);
@@ -30,8 +31,16 @@ exports.showCreateForm = async (req, res) => {
 
 exports.createTask = async (req, res) => {
     try {
-        const { title, description, project_id, user_id, deadline } = req.body;
-        await db.query("INSERT INTO tasks (title, description, status, project_id, user_id, deadline) VALUES (?, ?, DEFAULT, ?, ?, ?)", [title, description, project_id, user_id, deadline]);
+        const { title, description, project_id, user_id, deadline, dependencies } = req.body;
+
+        // AI-powered task priority suggestion
+        const priority = await AIService.suggestPriority(deadline, dependencies);
+
+        await db.query(
+            "INSERT INTO tasks (title, description, status, project_id, user_id, deadline, priority) VALUES (?, ?, DEFAULT, ?, ?, ?, ?)",
+            [title, description, project_id, user_id, deadline, priority]
+        );
+
         res.redirect("/");
     } catch (err) {
         console.error("Error creating task:", err);
@@ -41,12 +50,15 @@ exports.createTask = async (req, res) => {
 
 exports.editTask = async (req, res) => {
     try {
-        const { title, description, project_id, user_id, deadline } = req.body;
+        const { title, description, project_id, user_id, deadline, dependencies } = req.body;
         const taskId = req.params.id;
 
+        // AI-based deadline optimization
+        const adjustedDeadline = await AIService.recommendDeadline(deadline, dependencies);
+
         await db.query(
-            "UPDATE tasks SET title = ?, description = ?, project_id = ?, deadline = ?, user_id = ? WHERE id = ?",
-            [title, description, project_id, deadline, user_id, taskId]
+            "UPDATE tasks SET title = ?, description = ?, project_id = ?, deadline = ?, user_id = ?, adjusted_deadline = ? WHERE id = ?",
+            [title, description, project_id, deadline, user_id, adjustedDeadline, taskId]
         );
 
         res.redirect('/');
@@ -75,6 +87,37 @@ exports.updateTaskStatus = async (req, res) => {
         res.status(500).json({ error: "Database update failed" });
     }
 };
+
+exports.optimizeTasks = async (req, res) => {
+    try {
+        const [tasks] = await db.query(`
+            SELECT tasks.id, tasks.title, tasks.description, tasks.deadline, 
+                   projects.title AS project_name, users.name AS user_name 
+            FROM tasks 
+            LEFT JOIN projects ON tasks.project_id = projects.id
+            LEFT JOIN users ON tasks.user_id = users.id
+        `);
+
+        // Optimize tasks using AI Service
+        const optimizedTasks = await Promise.all(
+            tasks.map(async (task) => {
+                const priority = await AIService.suggestPriority(task.deadline, []);
+                const adjusted_deadline = await AIService.recommendDeadline(task.deadline, []);
+                return {
+                    ...task,
+                    priority,
+                    adjusted_deadline,
+                };
+            })
+        );
+
+        res.render("optimized", { tasks: optimizedTasks, user: req.session.user });
+    } catch (err) {
+        console.error("Error optimizing tasks:", err);
+        res.status(500).send("Error optimizing tasks");
+    }
+};
+
 
 exports.editTaskForm = async (req, res) => {
     try {
